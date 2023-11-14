@@ -1,10 +1,12 @@
 import 'package:expense_tracker/model/expense_info_model.dart';
+import 'package:expense_tracker/provider/expense_provider.dart';
 import 'package:expense_tracker/screens/show_expense_screen.dart';
 import 'package:expense_tracker/service/shared_pref_service.dart';
 import 'package:expense_tracker/util/colors_const.dart';
 import 'package:expense_tracker/util/strings_const.dart';
 import 'package:expense_tracker/util/validators.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AddExpenseScreen extends StatefulWidget {
   const AddExpenseScreen({super.key});
@@ -14,8 +16,8 @@ class AddExpenseScreen extends StatefulWidget {
 }
 
 class _AddExpenseScreenState extends State<AddExpenseScreen> {
-  late TextEditingController nameController;
 
+  late TextEditingController nameController;
   late TextEditingController categoryController;
   late TextEditingController priceController;
   late TextEditingController descriptionController;
@@ -24,7 +26,6 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     nameController = TextEditingController();
     categoryController = TextEditingController();
     priceController = TextEditingController();
@@ -32,20 +33,9 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
     super.initState();
   }
 
-  String currentValue = StringsConst.currentValue;
-  List<String> list = [
-    StringsConst.list,
-    StringsConst.list1,
-    StringsConst.list2,
-    StringsConst.list3,
-    StringsConst.list4,
-    StringsConst.list5,
-    StringsConst.list6,
-    StringsConst.list7,
-  ];
-
   @override
   Widget build(BuildContext context) {
+    ExpenseProvider provider = Provider.of<ExpenseProvider>(context,listen: false);
     return Scaffold(
       appBar: AppBar(
         title: const Text(StringsConst.addTitleText),
@@ -64,15 +54,15 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                     children: [
                       const Text(StringsConst.addDropdownText),
                       DropdownButton(
-                        value: currentValue,
-                        items: list.map((e) {
+                        value:provider.currentValue,
+                        items: provider.list.map((e) {
                           return DropdownMenuItem(
                             value: e,
                             child: Text(e),
                           );
                         }).toList(),
                         onChanged: (String? item) {
-                          currentValue = item!;
+                         provider.updateCurrentValue(item!);
                           setState(() {});
                         },
                       ),
@@ -114,46 +104,6 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                     ),
                   ),
                   const SizedBox(height: 16,),
-                  // TextField(
-                  //   controller: nameController,
-                  //   decoration: InputDecoration(
-                  //     label: const Text(StringsConst.labelNameText),
-                  //     border: OutlineInputBorder(
-                  //       borderRadius: BorderRadius.circular(8),
-                  //     ),
-                  //     hintText: StringsConst.hintTextName,
-                  //   ),
-                  // ),
-                  // const SizedBox(
-                  //   height: 16,
-                  // ),
-                  // TextField(
-                  //   controller: priceController,
-                  //   keyboardType: TextInputType.number,
-                  //   decoration: InputDecoration(
-                  //     label: const Text(StringsConst.labelPriceText),
-                  //     border: OutlineInputBorder(
-                  //       borderRadius: BorderRadius.circular(8),
-                  //     ),
-                  //     hintText: StringsConst.hintTextPrice,
-                  //   ),
-                  // ),
-                  // const SizedBox(
-                  //   height: 16,
-                  // ),
-                  // TextField(
-                  //   controller: descriptionController,
-                  //   decoration: InputDecoration(
-                  //     label: const Text(StringsConst.labelDescriptionText),
-                  //     border: OutlineInputBorder(
-                  //       borderRadius: BorderRadius.circular(8),
-                  //     ),
-                  //     hintText: StringsConst.hintTextDescription,
-                  //   ),
-                  // ),
-                  // const SizedBox(
-                  //   height: 16,
-                  // ),
                   ElevatedButton(
                     style: ButtonStyle(
                       minimumSize:
@@ -176,28 +126,11 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
     );
   }
 
-  // Future<void> addExpense() async {
-  //   ExpenseInfo expenseInfo = ExpenseInfo(
-  //     name: nameController.text,
-  //     category: currentValue,
-  //     price: int.parse(priceController.text),
-  //     description: descriptionController.text,
-  //   );
-  //   nameController.clear();
-  //   priceController.clear();
-  //   descriptionController.clear();
-  //   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-  //   String addExp = jsonEncode(expenseInfo.toMap());
-  //   List<String> expenseList =
-  //       sharedPreferences.getStringList('ExpenseData') ?? [];
-  //   expenseList.add(addExp);
-  //   sharedPreferences.setStringList('ExpenseData', expenseList);
-  // }
-
   Future<void> addExpense() async {
+    ExpenseProvider provider = Provider.of<ExpenseProvider>(context,listen: false);
     ExpenseInfo expenseInfo = ExpenseInfo(
       name: nameController.text,
-      category: currentValue,
+      category: provider.currentValue,
       price: int.parse(priceController.text),
       description: descriptionController.text,
     );
