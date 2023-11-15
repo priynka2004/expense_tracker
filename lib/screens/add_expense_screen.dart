@@ -16,7 +16,6 @@ class AddExpenseScreen extends StatefulWidget {
 }
 
 class _AddExpenseScreenState extends State<AddExpenseScreen> {
-
   late TextEditingController nameController;
   late TextEditingController categoryController;
   late TextEditingController priceController;
@@ -35,14 +34,13 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ExpenseProvider provider = Provider.of<ExpenseProvider>(context,listen: false);
     return Scaffold(
       appBar: AppBar(
         title: const Text(StringsConst.addTitleText),
         backgroundColor: ColorsConst.addBackgroundColor,
       ),
-      body:  Form(
-    key: formKey,
+      body: Form(
+        key: formKey,
         child: Center(
           child: SingleChildScrollView(
             child: Padding(
@@ -53,17 +51,21 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       const Text(StringsConst.addDropdownText),
-                      DropdownButton(
-                        value:provider.currentValue,
-                        items: provider.list.map((e) {
-                          return DropdownMenuItem(
-                            value: e,
-                            child: Text(e),
+                      Consumer<ExpenseProvider>(
+                        builder: (BuildContext context,
+                            ExpenseProvider provider, Widget? child) {
+                          return DropdownButton(
+                            value: provider.currentValue,
+                            items: provider.list.map((e) {
+                              return DropdownMenuItem(
+                                value: e,
+                                child: Text(e),
+                              );
+                            }).toList(),
+                            onChanged: (String? item) {
+                              provider.updateCurrentValue(item!);
+                            },
                           );
-                        }).toList(),
-                        onChanged: (String? item) {
-                         provider.updateCurrentValue(item!);
-                          setState(() {});
                         },
                       ),
                     ],
@@ -81,7 +83,9 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                       border: OutlineInputBorder(),
                     ),
                   ),
-                  const SizedBox(height: 16,),
+                  const SizedBox(
+                    height: 16,
+                  ),
                   TextFormField(
                     validator: (String? value) {
                       return Validators.nameValidator(value);
@@ -92,7 +96,9 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                       border: OutlineInputBorder(),
                     ),
                   ),
-                  const SizedBox(height: 16,),
+                  const SizedBox(
+                    height: 16,
+                  ),
                   TextFormField(
                     validator: (String? value) {
                       return Validators.nameValidator(value);
@@ -103,7 +109,9 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                       border: OutlineInputBorder(),
                     ),
                   ),
-                  const SizedBox(height: 16,),
+                  const SizedBox(
+                    height: 16,
+                  ),
                   ElevatedButton(
                     style: ButtonStyle(
                       minimumSize:
@@ -127,7 +135,8 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   }
 
   Future<void> addExpense() async {
-    ExpenseProvider provider = Provider.of<ExpenseProvider>(context,listen: false);
+    ExpenseProvider provider =
+        Provider.of<ExpenseProvider>(context, listen: false);
     ExpenseInfo expenseInfo = ExpenseInfo(
       name: nameController.text,
       category: provider.currentValue,

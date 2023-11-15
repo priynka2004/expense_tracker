@@ -24,7 +24,6 @@ class _ShowExpenseScreenState extends State<ShowExpenseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ExpenseProvider provider = Provider.of<ExpenseProvider>(context,listen: false);
     return Scaffold(
       appBar: AppBar(
         title: const Text(StringsConst.showTitleText),
@@ -43,7 +42,7 @@ class _ShowExpenseScreenState extends State<ShowExpenseScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Consumer<ExpenseProvider>(
-          builder: (BuildContext context, ExpenseProvider value, Widget? child) {
+          builder: (BuildContext context, ExpenseProvider provider, Widget? child) {
             return ListView.builder(
               itemCount: provider.expList.length,
               itemBuilder: (context, index) {
