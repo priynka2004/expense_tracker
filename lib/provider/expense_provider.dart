@@ -31,6 +31,4 @@ class ExpenseProvider extends ChangeNotifier{
     expList = expenses;
     notifyListeners();
   }
-
-
 }

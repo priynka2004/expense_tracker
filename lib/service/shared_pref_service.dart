@@ -4,14 +4,15 @@ import 'dart:convert';
 
 class ExpenseService {
   static const String expenseKey = 'ExpenseData';
+
   static Future<void> addExpense(ExpenseInfo expenseInfo) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    List<String> expenseList = sharedPreferences.getStringList(expenseKey) ?? [];
+    List<String> expenseList =
+        sharedPreferences.getStringList(expenseKey) ?? [];
     String addExp = jsonEncode(expenseInfo.toMap());
-      expenseList.add(addExp);
-      sharedPreferences.setStringList(expenseKey, expenseList);
+    expenseList.add(addExp);
+    sharedPreferences.setStringList(expenseKey, expenseList);
   }
-
 
   static Future<List<ExpenseInfo>> getExpenses() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
